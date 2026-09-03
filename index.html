@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- This "viewport" line is what makes the page resize nicely on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ✏️ EDIT ME: this text shows up as the browser tab title -->
+  <title>Ellie &amp; Jaiden - Wedding</title>
+
+  <!-- Loads "Great Vibes", the flowing script font used for headlines below -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================= -->
+  <!-- SCREEN 1: ENVELOPE + SAVE THE DATE             -->
+  <!-- This is all one continuous scene, playing out  -->
+  <!-- automatically from a single click:              -->
+  <!--   flap opens -> card peeks out -> card lifts    -->
+  <!--   fully into view -> photo fades in behind      -->
+  <!--   everything -> polaroids fade in                -->
+  <!-- ============================================= -->
+  <section id="envelope-screen">
+
+    <!-- ✏️ EDIT ME: swap this file name to use a different background photo -->
+    <div class="scene-photo" style="background-image: url('images/photos/DSC_0203.jpg');"></div>
+
+    <div class="scene-content">
+
+      <!-- ✏️ EDIT ME: the script headline above the envelope -->
+      <h1 id="envelope-headline">You&rsquo;ve got mail&hellip;</h1>
+
+      <div class="stage-row">
+
+        <!-- ✏️ EDIT ME: swap the file name to use a different photo -->
+        <div class="polaroid polaroid-1">
+          <img src="images/photos/DSC_0007.jpg" alt="Ellie and Jaiden smiling together in a field">
+        </div>
+
+        <div id="envelope">
+          <div class="envelope-back"></div>
+
+          <!-- The "Save the Date" card, tucked inside until the envelope is opened -->
+          <div id="std-card">
+            <p class="std-card-label">Save the Date</p>
+            <!-- ✏️ EDIT ME: your wedding date -->
+            <p class="std-card-date">May 30th, 2027</p>
+          </div>
+
+          <div class="envelope-flap">
+            <!-- ✏️ EDIT ME: the small text embossed on the flap -->
+            <span class="open-me-label">Open Me</span>
+          </div>
+          <div class="envelope-seal"></div>
+        </div>
+
+        <!-- ✏️ EDIT ME: swap the file name to use a different photo -->
+        <div class="polaroid polaroid-2">
+          <img src="images/photos/DSC_0170.jpg" alt="Ellie and Jaiden sitting together by the pond">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================= -->
+  <!-- PHOTO FILMSTRIP                                -->
+  <!-- A simple row of 3 more photos, below the fold. -->
+  <!-- ============================================= -->
+  <section id="filmstrip">
+    <!-- ✏️ EDIT ME: swap any of these 3 file names to use different photos -->
+    <div class="filmstrip-photo">
+      <img src="images/photos/DSC_0003.jpg" alt="Ellie and Jaiden walking toward each other in a field">
+    </div>
+    <div class="filmstrip-photo">
+      <img src="images/photos/DSC_0044.jpg" alt="Ellie and Jaiden hugging">
+    </div>
+    <div class="filmstrip-photo">
+      <img src="images/photos/DSC_0231.jpg" alt="Ellie and Jaiden walking together, laughing">
+    </div>
+  </section>
+
+  <!-- ============================================= -->
+  <!-- RSVP / MAILING ADDRESS FORM                    -->
+  <!-- Submissions are delivered by Web3Forms (a free    -->
+  <!-- form-to-email service) — see script.js.            -->
+  <!-- ============================================= -->
+  <section id="address-form">
+    <div class="form-card">
+
+      <!-- ✏️ EDIT ME: the heading and message above the form -->
+      <h2 class="form-heading">Send Us Your Address</h2>
+      <p class="form-subheading">We can&rsquo;t wait to celebrate with you &mdash; let us know where to mail your formal invite.</p>
+
+      <form id="address-form-element">
+
+        <!-- ✏️ EDIT ME: paste your own Web3Forms access key here.
+             Get a free one at https://web3forms.com by entering your
+             email — they'll send you a key to paste in place of the
+             text below. This is what makes submissions email to YOU. -->
+        <input type="hidden" name="access_key" value="b23c8209-6fca-4046-a49e-77476e17272c">
+        <input type="hidden" name="subject" value="New RSVP Mailing Address — Ellie & Jaiden's Wedding">
+
+        <label for="guest-names">Full name(s) of everyone invited</label>
+        <textarea id="guest-names" name="guest-names" rows="2" required></textarea>
+
+        <label for="mailing-name">Preferred name for mailing</label>
+        <input type="text" id="mailing-name" name="mailing-name" placeholder="e.g. The Smith Family">
+
+        <label for="mailing-address">Mailing address</label>
+        <textarea id="mailing-address" name="mailing-address" rows="3" required placeholder="Street address, City, State, ZIP"></textarea>
+
+        <button type="submit">Submit My Address</button>
+
+        <!-- Shown after submitting — script.js fills in the actual result -->
+        <p id="form-placeholder-note"></p>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================= -->
+  <!-- FOOTER                                          -->
+  <!-- ============================================= -->
+  <footer id="site-footer">
+    <p class="footer-label">With Love,</p>
+    <!-- ✏️ EDIT ME: your names -->
+    <p class="footer-names">Ellie &amp; Jaiden</p>
+    <a href="#envelope-screen" id="back-to-envelope">&lsaquo; Back to Envelope</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

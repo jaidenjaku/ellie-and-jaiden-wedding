@@ -1,0 +1,500 @@
+/* =================================================
+   COLORS
+   Change these once here and they update everywhere.
+   ================================================= */
+:root {
+  --page-background: #f7f5f0;     /* ✏️ EDIT ME: the background behind the envelope */
+  --envelope-body: #9CA97C;       /* ✏️ EDIT ME: main sage-green envelope color */
+  --envelope-flap: #A9B587;       /* ✏️ EDIT ME: the triangle flap color (slightly lighter looks best) */
+  --envelope-inside: #808C5E;     /* ✏️ EDIT ME: color you see once it's open */
+  --seal-color: #FAF7F0;          /* ✏️ EDIT ME: the wax seal circle color */
+  --open-label-color: #6E7A4E;    /* ✏️ EDIT ME: the "Open Me" embossed text color */
+  --headline-color: #4A4A3A;      /* ✏️ EDIT ME: the script headline / card text color */
+  --filmstrip-line-color: #8B8F6B; /* ✏️ EDIT ME: the tick-mark/divider line color in the photo filmstrip */
+  --filmstrip-band-color: #EDE6D6; /* ✏️ EDIT ME: the cream filmstrip background color */
+  --form-button-color: #808C5E;    /* ✏️ EDIT ME: the submit button color */
+  --form-button-hover: #6E7A4E;    /* ✏️ EDIT ME: the submit button color on hover */
+  --footer-bg: #808C5E;             /* ✏️ EDIT ME: the footer background color */
+  --footer-text: #FAF7F0;           /* ✏️ EDIT ME: the footer text color */
+}
+
+/* Reset some default browser spacing so our layout is predictable */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* ✏️ EDIT ME: swap this later if you want a different body font */
+  font-family: Georgia, 'Times New Roman', serif;
+
+  /* Scrolling is locked until the envelope is clicked open — script.js
+     adds the "unlocked" class below at that point */
+  overflow: hidden;
+}
+
+body.unlocked {
+  overflow: auto;
+}
+
+/* =================================================
+   SCREEN 1: ENVELOPE + SAVE THE DATE SCENE
+   ================================================= */
+#envelope-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;          /* 100vh = full height of the browser window */
+  background: var(--page-background);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* The full-screen couple photo. Starts invisible and fades in once the
+   envelope is opened (JS adds the "stage-2" class below).
+
+   NOTE: on narrow phone screens this crops the sides of the photo, which
+   can cut into the shot — that's a known issue we're coming back to later. */
+.scene-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  /* ✏️ EDIT ME: shifts which part of the photo is centered in the crop.
+     First number = left/right focus (0% = far left of photo, 100% = far
+     right). Nudge this lower to bring more of the left side into view,
+     higher for more of the right side. Tune this together on your phone. */
+  background-position: 38% center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  z-index: 0;
+}
+
+#envelope-screen.stage-2 .scene-photo {
+  opacity: 1;
+}
+
+/* A faint darkening layer so the card/polaroids stay easy to read once the photo appears */
+.scene-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Everything the guest actually sees, sitting above the background photo */
+.scene-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* The flowing script headline, e.g. "You've got mail..." */
+#envelope-headline {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: 64px;
+  color: var(--headline-color);
+  line-height: 1.1;
+  transition: opacity 0.6s ease;
+}
+
+/* Fades out once the envelope has been opened */
+#envelope-screen.stage-1 #envelope-headline {
+  opacity: 0;
+}
+
+/* Row holding the two polaroids and the envelope side by side.
+   Wraps onto multiple lines automatically on narrow phone screens. */
+.stage-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+#envelope {
+  position: relative;
+  width: 320px;
+  max-width: 85vw;            /* shrinks on narrow phone screens */
+  height: 210px;
+  cursor: pointer;
+}
+
+/* The rectangle body of the envelope, sitting behind everything */
+.envelope-back {
+  position: absolute;
+  inset: 0;                   /* stretches to fill #envelope */
+  background: var(--envelope-inside);
+  border-radius: 4px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* A slightly lighter front panel so the "inside" color peeks out once opened */
+.envelope-back::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 78%;
+  background: var(--envelope-body);
+  border-radius: 0 0 4px 4px;
+}
+
+/* The triangular top flap. clip-path cuts a rectangle into a triangle shape. */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 58%;
+  background: var(--envelope-flap);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 0.9s ease-in-out;
+  z-index: 3;
+  border-radius: 4px 4px 0 0;
+}
+
+/* "Open Me" text embossed near the top of the flap */
+.open-me-label {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--open-label-color);
+  text-transform: uppercase;
+}
+
+/* The wax-seal circle sitting where the flap meets the body */
+.envelope-seal {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--seal-color);
+  /* subtle rings + highlight fake a pressed-wax texture without needing an image */
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 4px rgba(0, 0, 0, 0.12),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+  z-index: 4;
+  transition: opacity 0.4s ease;
+}
+
+/* When the flap is open, it flips back and drops behind the body */
+#envelope.open .envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+#envelope.open .envelope-seal {
+  opacity: 0;
+}
+
+/* --- The "Save the Date" card tucked inside the envelope --- */
+#std-card {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  width: 200px;
+  background: #fff;
+  border-radius: 4px;
+  padding: 22px 14px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+
+  /* Hidden and tucked down inside the envelope until the envelope opens */
+  opacity: 0;
+  transform: translate(-50%, 10px) rotate(-2deg);
+  transition: transform 0.9s ease, opacity 0.6s ease;
+}
+
+/* Stage 1 (envelope opened): the card peeks partway out */
+#envelope-screen.stage-1 #std-card {
+  opacity: 1;
+  transform: translate(-50%, -25px) rotate(-2deg);
+}
+
+/* Stage 2 (a beat later, automatically): the card lifts the rest of the way out and stays put */
+#envelope-screen.stage-2 #std-card {
+  transform: translate(-50%, -170px) rotate(-2deg);
+}
+
+.std-card-label {
+  font-family: 'Great Vibes', cursive;
+  font-size: 34px;
+  color: var(--headline-color);
+}
+
+.std-card-date {
+  margin-top: 6px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--headline-color);
+}
+
+/* --- Polaroid-style photos, appear once the card is opened (stage 2) --- */
+.polaroid {
+  background: #fff;
+  padding: 10px 10px 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 170px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;   /* crops the photo to fill the frame without stretching */
+}
+
+.polaroid-1 {
+  transform: translateY(30px) rotate(-8deg);
+  transition-delay: 0.3s;
+}
+
+.polaroid-2 {
+  transform: translateY(30px) rotate(6deg);
+  transition-delay: 0.55s;
+}
+
+#envelope-screen.stage-2 .polaroid-1 {
+  transform: translateY(0) rotate(-8deg);
+  opacity: 1;
+}
+
+#envelope-screen.stage-2 .polaroid-2 {
+  transform: translateY(0) rotate(6deg);
+  opacity: 1;
+}
+
+/* =================================================
+   PHOTO FILMSTRIP
+   The whole section background is a repeating pattern
+   of tiny double lines (like film-strip perforations),
+   with the 3 polaroid-style photos spaced out on top.
+   ================================================= */
+#filmstrip {
+  width: 100%;
+  padding: 60px 24px;
+  background-color: var(--filmstrip-band-color);
+  /* Draws one thin line, a small gap, a second thin line, then a bigger
+     gap — and repeats that across the entire section as a texture. */
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--filmstrip-line-color) 0px,
+    var(--filmstrip-line-color) 1px,
+    transparent 1px,
+    transparent 3px,
+    var(--filmstrip-line-color) 3px,
+    var(--filmstrip-line-color) 4px,
+    transparent 4px,
+    transparent 30px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.filmstrip-photo {
+  width: 260px;
+  max-width: 100%;
+  background: #fff;
+  padding: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.filmstrip-photo img {
+  display: block;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;   /* crops each photo to fill its frame without stretching */
+}
+
+/* =================================================
+   RSVP / MAILING ADDRESS FORM
+   ================================================= */
+#address-form {
+  width: 100%;
+  padding: 80px 24px;
+  background: var(--page-background);
+  display: flex;
+  justify-content: center;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 48px 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.form-heading {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: 44px;
+  color: var(--headline-color);
+}
+
+.form-subheading {
+  margin-top: 8px;
+  margin-bottom: 28px;
+  color: var(--headline-color);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#address-form-element {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+#address-form-element label {
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--headline-color);
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+#address-form-element input,
+#address-form-element textarea {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid #d8d2c4;
+  border-radius: 4px;
+  background: var(--page-background);
+  color: var(--headline-color);
+  resize: vertical;
+}
+
+#address-form-element input:focus,
+#address-form-element textarea:focus {
+  outline: none;
+  border-color: var(--envelope-body);
+}
+
+#address-form-element button {
+  margin-top: 28px;
+  padding: 14px;
+  border: none;
+  border-radius: 4px;
+  background: var(--form-button-color);
+  color: #fff;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#address-form-element button:hover {
+  background: var(--form-button-hover);
+}
+
+/* Hidden until the placeholder submit message is shown by script.js */
+#form-placeholder-note {
+  display: none;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--headline-color);
+}
+
+#form-placeholder-note.visible {
+  display: block;
+}
+
+/* =================================================
+   FOOTER
+   ================================================= */
+#site-footer {
+  width: 100%;
+  padding: 60px 24px;
+  background: var(--footer-bg);
+  text-align: center;
+}
+
+.footer-label {
+  color: var(--footer-text);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.footer-names {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: 40px;
+  color: var(--footer-text);
+  margin-top: 6px;
+}
+
+#back-to-envelope {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--footer-text);
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-bottom: 1px solid var(--footer-text);
+  padding-bottom: 2px;
+}
+
+#back-to-envelope:hover {
+  opacity: 0.8;
+}
+
+/* =================================================
+   PHONE-SIZED SCREENS
+   Below this width, the polaroids and envelope stack
+   in a column instead of sitting side by side.
+   ================================================= */
+@media (max-width: 700px) {
+  .stage-row {
+    gap: 0;
+  }
+
+  /* Pulls the bottom polaroid up so it overlaps the envelope slightly,
+     instead of leaving a big gap between them */
+  .polaroid-2 {
+    margin-top: -50px;
+  }
+
+  /* Filmstrip photos stack in one column and go full-width on phones */
+  .filmstrip-photo {
+    width: 100%;
+    max-width: 320px;
+  }
+}
