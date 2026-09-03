@@ -113,14 +113,15 @@ body.unlocked {
   opacity: 0;
 }
 
-/* Row holding the two polaroids and the envelope side by side.
-   Wraps onto multiple lines automatically on narrow phone screens. */
+/* Holds the envelope, with the two polaroids positioned around it.
+   The polaroids are positioned absolutely (see below) so that even
+   while they're invisible (before stage 2), they never take up blank
+   space in the page layout. */
 .stage-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
 }
 
 #envelope {
@@ -252,13 +253,18 @@ body.unlocked {
   color: var(--headline-color);
 }
 
-/* --- Polaroid-style photos, appear once the card is opened (stage 2) --- */
+/* --- Polaroid-style photos, appear once the card is opened (stage 2) ---
+   Positioned absolutely (relative to .stage-row) instead of sitting in
+   the normal flex flow, so they never affect the page's layout/height
+   while invisible — on phones especially, this is what was causing a
+   big blank gap above the envelope on first page load. */
 .polaroid {
+  position: absolute;
+  top: 50%;
   background: #fff;
   padding: 10px 10px 30px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   width: 170px;
-  flex-shrink: 0;
   opacity: 0;
   transition: transform 0.8s ease, opacity 0.8s ease;
 }
@@ -270,23 +276,29 @@ body.unlocked {
   object-fit: cover;   /* crops the photo to fill the frame without stretching */
 }
 
+/* Sits to the left of the envelope, vertically centered with it */
 .polaroid-1 {
-  transform: translateY(30px) rotate(-8deg);
+  right: 100%;
+  margin-right: 24px;
+  transform: translateY(-50%) translateY(30px) rotate(-8deg);
   transition-delay: 0.3s;
 }
 
+/* Sits to the right of the envelope, vertically centered with it */
 .polaroid-2 {
-  transform: translateY(30px) rotate(6deg);
+  left: 100%;
+  margin-left: 24px;
+  transform: translateY(-50%) translateY(30px) rotate(6deg);
   transition-delay: 0.55s;
 }
 
 #envelope-screen.stage-2 .polaroid-1 {
-  transform: translateY(0) rotate(-8deg);
+  transform: translateY(-50%) translateY(0) rotate(-8deg);
   opacity: 1;
 }
 
 #envelope-screen.stage-2 .polaroid-2 {
-  transform: translateY(0) rotate(6deg);
+  transform: translateY(-50%) translateY(0) rotate(6deg);
   opacity: 1;
 }
 
@@ -478,18 +490,35 @@ body.unlocked {
 
 /* =================================================
    PHONE-SIZED SCREENS
-   Below this width, the polaroids and envelope stack
-   in a column instead of sitting side by side.
+   Below this width, there's not enough room for the
+   polaroids to sit beside the envelope, so they move
+   to just above/below it instead (slightly overlapping).
    ================================================= */
 @media (max-width: 700px) {
-  .stage-row {
-    gap: 0;
+  .polaroid-1 {
+    top: auto;
+    bottom: 100%;
+    right: auto;
+    left: 50%;
+    margin-right: 0;
+    margin-bottom: -30px;
+    transform: translateX(-50%) translateY(30px) rotate(-8deg);
   }
 
-  /* Pulls the bottom polaroid up so it overlaps the envelope slightly,
-     instead of leaving a big gap between them */
   .polaroid-2 {
+    top: 100%;
+    left: 50%;
+    margin-left: 0;
     margin-top: -50px;
+    transform: translateX(-50%) translateY(-30px) rotate(6deg);
+  }
+
+  #envelope-screen.stage-2 .polaroid-1 {
+    transform: translateX(-50%) translateY(0) rotate(-8deg);
+  }
+
+  #envelope-screen.stage-2 .polaroid-2 {
+    transform: translateX(-50%) translateY(0) rotate(6deg);
   }
 
   /* Filmstrip photos stack in one column and go full-width on phones */
