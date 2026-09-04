@@ -501,7 +501,7 @@ body.unlocked {
     right: auto;
     left: 50%;
     margin-right: 0;
-    margin-bottom: -30px;
+    margin-bottom: -10px;       /* was -30px — shifts the photo higher, less hidden behind the envelope */
     transform: translateX(-50%) translateY(30px) rotate(-8deg);
   }
 
