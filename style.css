@@ -103,6 +103,37 @@ body.unlocked {
   width: 100%;
 }
 
+/* The squiggly "scroll down" hint. Positioned independently of the
+   flex layout above (not affected by its gap/centering), sitting off
+   to the side near the bottom polaroid. Hidden until stage 2, then
+   fades in and gently bounces to draw the eye downward. */
+#scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  z-index: 1;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); /* keeps it visible against lighter parts of the photo */
+  transition: opacity 0.8s ease;
+  transition-delay: 0.4s;
+}
+
+#envelope-screen.stage-2 #scroll-hint {
+  opacity: 1;
+  animation: scroll-hint-bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-bounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(10px);
+  }
+}
+
 /* The flowing script headline, e.g. "You've got mail..." */
 #envelope-headline {
   font-family: 'Great Vibes', cursive;
@@ -530,5 +561,16 @@ body.unlocked {
   .filmstrip-photo {
     width: 100%;
     max-width: 320px;
+  }
+
+  /* Smaller and shifted further down so the bounce never reaches up
+     into the bottom polaroid on narrow phone screens */
+  #scroll-hint {
+    bottom: 12px;
+  }
+
+  #scroll-hint svg {
+    width: 48px;
+    height: 80px;
   }
 }
