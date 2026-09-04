@@ -4,17 +4,17 @@
    ================================================= */
 :root {
   --page-background: #f7f5f0;     /* ✏️ EDIT ME: the background behind the envelope */
-  --envelope-body: #9CA97C;       /* ✏️ EDIT ME: main sage-green envelope color */
-  --envelope-flap: #A9B587;       /* ✏️ EDIT ME: the triangle flap color (slightly lighter looks best) */
-  --envelope-inside: #808C5E;     /* ✏️ EDIT ME: color you see once it's open */
+  --envelope-body: #DED1EB;       /* ✏️ EDIT ME: main lavender envelope color */
+  --envelope-flap: #EBE3F3;       /* ✏️ EDIT ME: the triangle flap color (slightly lighter looks best) */
+  --envelope-inside: #B2A7BC;     /* ✏️ EDIT ME: color you see once it's open */
   --seal-color: #FAF7F0;          /* ✏️ EDIT ME: the wax seal circle color */
-  --open-label-color: #6E7A4E;    /* ✏️ EDIT ME: the "Open Me" embossed text color */
-  --headline-color: #4A4A3A;      /* ✏️ EDIT ME: the script headline / card text color */
-  --filmstrip-line-color: #8B8F6B; /* ✏️ EDIT ME: the tick-mark/divider line color in the photo filmstrip */
-  --filmstrip-band-color: #EDE6D6; /* ✏️ EDIT ME: the cream filmstrip background color */
-  --form-button-color: #808C5E;    /* ✏️ EDIT ME: the submit button color */
-  --form-button-hover: #6E7A4E;    /* ✏️ EDIT ME: the submit button color on hover */
-  --footer-bg: #808C5E;             /* ✏️ EDIT ME: the footer background color */
+  --open-label-color: #908899;    /* ✏️ EDIT ME: the "Open Me" embossed text color */
+  --headline-color: #3A3240;      /* ✏️ EDIT ME: the script headline / card text color */
+  --filmstrip-line-color: #908899; /* ✏️ EDIT ME: the tick-mark/divider line color in the photo filmstrip */
+  --filmstrip-band-color: #F5F1F8; /* ✏️ EDIT ME: the cream filmstrip background color */
+  --form-button-color: #B2A7BC;    /* ✏️ EDIT ME: the submit button color */
+  --form-button-hover: #908899;    /* ✏️ EDIT ME: the submit button color on hover */
+  --footer-bg: #B2A7BC;             /* ✏️ EDIT ME: the footer background color */
   --footer-text: #FAF7F0;           /* ✏️ EDIT ME: the footer text color */
 }
 
@@ -23,6 +23,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  /* Stops the default blue/gray flash that phones show when you tap
+     anything clickable (like the envelope) — we have our own tap/hover
+     effects defined where we want them instead */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
